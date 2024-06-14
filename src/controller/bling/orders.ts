@@ -7,10 +7,10 @@ const qs = require('qs');
 
 //import { Request, Response } from 'express';
 
-export async function createContact(contactBody: any) {
+export async function createContact(blingContactBody: any) {
 
 	const url = `${blingBaseUrl}/contatos`;
-	const data = contactBody;
+	const data = blingContactBody;
 	const config = {
 		headers: {
 			'Autorization': blingToken
@@ -30,9 +30,59 @@ export async function createContact(contactBody: any) {
 	return createContact;
 }
 
+export async function getContact(name: string) {
+
+	const url = `${blingBaseUrl}/contatos`;
+	const config = {
+		headers: {
+			'Autorization': blingToken
+		},
+		params: {
+			pesquisa: name
+		}
+	};
+
+	const createContact:any = await axios.get(url, config)
+		.then((response) => {
+			console.log(response);				
+			return response.data;
+		}).catch(function (error) {
+			console.log('DEU RUIM');
+			console.error(error.response.data);
+		}).finally(function () {
+			console.log('Chamada feita a bling');
+		});
+	return createContact;
+}
+
 export async function createOrders(pipedriveDeals: any) {
 
 
+}
+
+export async function getOrder(id: number) {
+
+	const url = `${blingBaseUrl}/vendas`;
+	const config = {
+		headers: {
+			'Autorization': blingToken
+		},
+		params: {
+			numero: id
+		}
+	};
+
+	const getOrder:any = await axios.get(url, config)
+		.then((response) => {
+			console.log(response);				
+			return response.data;
+		}).catch(function (error) {
+			console.log('DEU RUIM');
+			console.error(error.response.data);
+		}).finally(function () {
+			console.log('Chamada feita a bling');
+		});
+	return getOrder;
 }
 
 
