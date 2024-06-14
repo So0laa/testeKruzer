@@ -29,7 +29,7 @@ export async function createContactRequest(blingContactBody: any) {
 	return createContact;
 }
 
-export async function getContactRequest(name: string) {
+export async function getContactByNameRequest(name: string) {
 
 	const url = `${blingBaseUrl}/contatos`;
 	const config = {
@@ -77,7 +77,7 @@ export async function createOrdersRequest(blingOrderBody: any) {
 
 }
 
-export async function getOrderRequest(id: number) {
+export async function getOrderByIdRequest(id: number) {
 
 	const url = `${blingBaseUrl}/vendas`;
 	const config = {

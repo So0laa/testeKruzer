@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { createContactRequest, getContactRequest, createOrdersRequest, getOrderRequest } from '../../components/bling/component';
-const bling = { createContactRequest, getContactRequest, createOrdersRequest, getOrderRequest };
+import { createContactRequest, getContactByNameRequest, createOrdersRequest, getOrderByIdRequest } from '../../components/bling/component';
+const bling = { createContactRequest, getContactByNameRequest, createOrdersRequest, getOrderByIdRequest };
 
 import { getDealsByStatusRequest, getDealDetailsRequest, getDealProductsRequest } from '../../components/pipedrivre/component';
 const pipedrive = { getDealsByStatusRequest, getDealDetailsRequest, getDealProductsRequest };
@@ -25,6 +25,20 @@ export async function createContact(req: Request, res: Response) {
 	}
 	
 	
+}
+
+export async function getContactByName(req: Request, res: Response) {
+	try {
+		const { name } = req.body;
+
+		const { data }: any = await getContactByNameRequest(name);
+
+		const contactDetails = data;
+
+		res.status(200).send(contactDetails);
+	} catch (error: any) {
+		res.status(400).send(error.message);
+	}
 }
 
 export async function createOrders(req: Request, res: Response) {
@@ -99,17 +113,16 @@ export async function createOrders(req: Request, res: Response) {
 	}	
 }
 
-export async function getDealProducts(req: Request, res: Response) {
+export async function getOrderById(req: Request, res: Response) {
 	try {
 		const { id } = req.body;
 
-		const { data }: any = await getDealProductsRequest(id);
+		const { data }: any = await getOrderByIdRequest(id);
 
-		const dealDetails = data;
+		const orderDetails = data;
 
-		res.status(200).send(dealDetails);
+		res.status(200).send(orderDetails);
 	} catch (error: any) {
 		res.status(400).send(error.message);
 	}
-	
 }
