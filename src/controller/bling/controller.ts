@@ -61,7 +61,7 @@ export async function createOrders(req: Request, res: Response) {
 
 					const { id } = deal;
 
-					const checkOrder = await bling.getOrderRequest(id);
+					const checkOrder = await bling.getOrderByIdRequest(id);
 
 					if (checkOrder.lenght){
 						next();
@@ -73,7 +73,7 @@ export async function createOrders(req: Request, res: Response) {
 
 					let blingContact: any;
 
-					const checkContact = await bling.getContactRequest(name);
+					const checkContact = await bling.getContactByNameRequest(name);
 
 					if (!checkContact.lenght){
 						const blingContactBody = convertContact(dealDetails);
