@@ -35,7 +35,8 @@ Endpoints disponíveis:
   * Bling:
  	* Create order: /bling/createOrder -> Cria o pedido do PipeDrive no Bling (Se necessário, também cria o cliente). Após isso, ID, Valor e Data são enviado para registro no banco
   	* body esperado:
-     	>	 {
+     
+     	>		{
 	>		numero: "numero do pedido",
 	>		data: "Data de criação do pedido"
 	>		dataSaida: "Data de envio do pedido",
