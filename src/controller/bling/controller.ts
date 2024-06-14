@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 
-//import { Request, Response } from 'express';
-
 import { createContactRequest, getContactRequest, createOrdersRequest, getOrderRequest } from '../../components/bling/component';
 const bling = { createContactRequest, getContactRequest, createOrdersRequest, getOrderRequest };
 
@@ -11,82 +9,107 @@ const pipedrive = { getDealsByStatusRequest, getDealDetailsRequest, getDealProdu
 import convertDealsToOrders from '../../middleware/convertDealsToOrders';
 import convertContact from '../../middleware/convertContact';
 
+import { orderModel } from '../../model/orders';
 
 export async function createContact(req: Request, res: Response) {
-	const contactBody = req.body;		
+	try {
+		const contactBody = req.body;		
 
-	const { data }: any = await createContactRequest(contactBody);
+		const { data }: any = await createContactRequest(contactBody);
 
-	const createdContact = data;
+		const createdContact = data;
 
-	res.status(200).send(createdContact);
+		res.status(200).send(createdContact);
+	} catch (error: any) {
+		res.status(400).send(error.message);
+	}
+	
+	
 }
 
 export async function createOrders(req: Request, res: Response) {
-	const { status, limit } = req.body;
+	try {
+		const { status, limit } = req.body;
 
-	let currentNext: any;
+		let currentNext: any;
 
-	let createdOrders;
+		let createdOrders;
 
-	do {
-		const pipedriveDealsResponse: any = await pipedrive.getDealsByStatusRequest(status, limit);
+		do {
+			const pipedriveDealsResponse: any = await pipedrive.getDealsByStatusRequest(status, limit);
 
-		if (pipedriveDealsResponse.lenght > 0) {
-			const { pipedriveDeals, next } = pipedriveDealsResponse;
+			if (pipedriveDealsResponse.lenght > 0) {
+				const { pipedriveDeals, next } = pipedriveDealsResponse;
 
-			currentNext = next;
+				currentNext = next;
 
-			pipedriveDeals.forEach(async (deal: any) => {
+				pipedriveDeals.forEach(async (deal: any) => {
 
-				const { id } = deal;
+					const { id } = deal;
 
-				const checkOrder = await bling.getOrderRequest(id);
+					const checkOrder = await bling.getOrderRequest(id);
 
-				if (checkOrder.lenght){
-					next();
-				} 
+					if (checkOrder.lenght){
+						next();
+					} 
 
-				const dealDetails = await pipedrive.getDealDetailsRequest(id);
+					const dealDetails = await pipedrive.getDealDetailsRequest(id);
 
-				const { name } = dealDetails.person_id;
+					const { name } = dealDetails.person_id;
 
-				let blingContact: any;
+					let blingContact: any;
 
-				const checkContact = await bling.getContactRequest(name);
+					const checkContact = await bling.getContactRequest(name);
 
-				if (!checkContact.lenght){
-					const blingContactBody = convertContact(dealDetails);
+					if (!checkContact.lenght){
+						const blingContactBody = convertContact(dealDetails);
 
-					blingContact = await bling.createContactRequest(blingContactBody);
-				} else {
-					blingContact = checkContact.data;
-				}
+						blingContact = await bling.createContactRequest(blingContactBody);
+					} else {
+						blingContact = checkContact.data;
+					}
 
-				const contact:number = blingContact.id;
+					const contact:number = blingContact.id;
 
-				const dealProducts = await pipedrive.getDealProductsRequest(id);
+					const dealProducts = await pipedrive.getDealProductsRequest(id);
 
-				const blingOrderBody = convertDealsToOrders(contact, dealDetails, dealProducts);
+					const blingOrderBody = convertDealsToOrders(contact, dealDetails, dealProducts);
 
-				const createOrderAtBling = await bling.createOrdersRequest(blingOrderBody);
-			});
-		}
-		console.log('Não há pedidos a serem criados!');
-		break;			
-	} while (currentNext);
+					const createOrderAtBling = await bling.createOrdersRequest(blingOrderBody);
 
-	
+					const formatOrder = {
+						numero: createOrderAtBling.data.id,
+						data: dealDetails.won_time,
+						valor: dealDetails.value
+					};
 
-	res.status(200).send(createdOrders);
+					const registerOrder = await orderModel.create(formatOrder);
+
+					res.status(201).json(registerOrder);
+				});
+			}
+			console.log('Não há pedidos a serem criados!');
+			break;			
+		
+		} while (currentNext);
+
+		res.status(200).send(createdOrders);
+	} catch (error: any) {
+		res.status(400).send(error.message);
+	}	
 }
 
 export async function getDealProducts(req: Request, res: Response) {
-	const { id } = req.body;
+	try {
+		const { id } = req.body;
 
-	const { data }: any = await getDealProductsRequest(id);
+		const { data }: any = await getDealProductsRequest(id);
 
-	const dealDetails = data;
+		const dealDetails = data;
 
-	res.status(200).send(dealDetails);
+		res.status(200).send(dealDetails);
+	} catch (error: any) {
+		res.status(400).send(error.message);
+	}
+	
 }
