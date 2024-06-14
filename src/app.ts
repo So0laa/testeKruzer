@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 //ROUTES
-import router from './router';
+import router from './routes/base/baseRouter';
 
 // EXTERNALS
 import express from 'express';
