@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 //ROUTES
-import baseRouter from './routes/base/baseRouter';
+import baseRouter from './routes/base/router';
 import pipeDriveRouter from './routes/pipedrive/router';
 import blingRouter from './routes/bling/router';
 
