@@ -1,7 +1,7 @@
+//EXTERNALS
 import { Request, Response } from 'express';
 
-//import { Request, Response } from 'express';
-
+//PIPEDRIVE-COMPONENT-REQUESTS
 import { getDealsByStatusRequest, getDealDetailsRequest, getDealProductsRequest } from '../../components/pipedrivre/component';
 const pipedrive = { getDealsByStatusRequest, getDealDetailsRequest, getDealProductsRequest };
 

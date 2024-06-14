@@ -1,5 +1,7 @@
+//EXTERNALS
 import { Router } from 'express';
 
+//BLING-CONTROLLER
 import { getContactByName, getOrderById, createOrders, createContact } from '../../controller/bling/controller';
 
 const blingRouter = Router();

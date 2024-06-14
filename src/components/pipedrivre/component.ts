@@ -1,6 +1,8 @@
+//ENV-VARIABLES
 const pipeDriveToken = process.env.PIPEDRIVE_TOKEN;
 const pipeDriveBaseUrl = process.env.PIPEDRIVE_URL;
 
+//EXTERNALS
 import axios from 'axios';
 
 export async function getDealsByStatusRequest(status: string, limit: number) {

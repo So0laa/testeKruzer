@@ -1,6 +1,8 @@
+//ENV-VARIABLES
 const blingToken = process.env.BLING_TOKEN;
 const blingBaseUrl = process.env.BLING_URL;
 
+//EXTERNALS
 import axios from 'axios';
 
 // const qs = require('qs');

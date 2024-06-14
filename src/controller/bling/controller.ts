@@ -1,14 +1,19 @@
+//EXTERNALS
 import { Request, Response } from 'express';
 
+//BLING-COMPONENT-REQUESTS
 import { createContactRequest, getContactByNameRequest, createOrdersRequest, getOrderByIdRequest } from '../../components/bling/component';
 const bling = { createContactRequest, getContactByNameRequest, createOrdersRequest, getOrderByIdRequest };
 
+//PIPEDRIVE-COMPONENT-REQUESTS
 import { getDealsByStatusRequest, getDealDetailsRequest, getDealProductsRequest } from '../../components/pipedrivre/component';
 const pipedrive = { getDealsByStatusRequest, getDealDetailsRequest, getDealProductsRequest };
 
+//MIDDLEWARES
 import convertDealsToOrders from '../../middleware/convertDealsToOrders';
 import convertContact from '../../middleware/convertContact';
 
+//MODELS
 import { orderModel } from '../../model/orders';
 
 export async function createContact(req: Request, res: Response) {
