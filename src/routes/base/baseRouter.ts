@@ -4,13 +4,17 @@ import { Router, Request, Response } from 'express';
 //const {getDealsByStatus} = new DealsRoutes();
 
 import { getDealsByStatus, getDealDetails, getDealProducts } from '../../controller/pipedrive/deals';
+const pipedrive = { getDealsByStatus, getDealDetails, getDealProducts };
 
-import { createOrders, getToken, createContact } from '../../controller/bling/orders';
+import { createOrders, getToken, createContact, getContact, getOrder } from '../../controller/bling/orders';
+const bling = { createOrders, getToken, createContact, getContact, getOrder };
 
 import convertDealsToOrders from '../../middleware/convertDealsToOrders';
 import convertContact from '../../middleware/convertContact';
 
 const router = Router();
+
+
 
 
 export default router
@@ -70,19 +74,35 @@ export default router
 
 					const { id } = deal;
 
-					const dealDetails = await getDealDetails(id);
+					const checkOrder = await bling.getOrder(id);
 
-					const blingContactBody = convertContact(dealDetails);
+					if (checkOrder.lenght){
+						next();
+					} 
 
-					const createContactAtBling = await createContact(blingContactBody);
+					const dealDetails = await pipedrive.getDealDetails(id);
 
-					const contact:number = createContactAtBling.id;
+					const { name } = dealDetails.person_id;
 
-					const dealProducts = await getDealProducts(id);
+					let blingContact: any;
+
+					const checkContact = await bling.getContact(name);
+
+					if (!checkContact.lenght){
+						const blingContactBody = convertContact(dealDetails);
+
+						blingContact = await bling.createContact(blingContactBody);
+					} else {
+						blingContact = checkContact.data;
+					}
+
+					const contact:number = blingContact.id;
+
+					const dealProducts = await pipedrive.getDealProducts(id);
 
 					const blingOrderBody = convertDealsToOrders(contact, dealDetails, dealProducts);
 
-					const createOrderAtBling = await createOrders(blingOrderBody);
+					const createOrderAtBling = await bling.createOrders(blingOrderBody);
 				});
 			}
 			console.log('Não há pedidos a serem criados!');
