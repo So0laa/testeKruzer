@@ -14,7 +14,7 @@ import convertDealsToOrders from '../../middleware/convertDealsToOrders';
 import convertContact from '../../middleware/convertContact';
 
 //MODELS
-import { orderModel } from '../../model/orders';
+import { OrderModel } from '../../model/orders';
 
 export async function createContact(req: Request, res: Response) {
 	try {
@@ -102,7 +102,7 @@ export async function createOrders(req: Request, res: Response) {
 						valor: dealDetails.value
 					};
 
-					const registerOrder = await orderModel.create(formatOrder);
+					const registerOrder = await OrderModel.create(formatOrder);
 
 					res.status(201).json(registerOrder);
 				});

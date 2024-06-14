@@ -12,4 +12,4 @@ const orderSchema = new Schema(
 	}
 );
 
-export const orderModel = model('Order', orderSchema);
+export const OrderModel = model('Order', orderSchema);
