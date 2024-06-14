@@ -40,6 +40,42 @@ export default router
 		const dealDetails = data;
 
 		res.status(200).send(dealDetails);
+	}).post('/createOrders', async (req: Request, res: Response) => {
+		const { status, limit } = req.body;
+
+		let currentNext: any;
+
+		let createdOrders;
+
+		do {
+			const pipedriveDealsResponse: any = await getDealsByStatus(status, limit);
+
+			if (pipedriveDealsResponse.lenght > 0) {
+				const { pipedriveDeals, next } = pipedriveDealsResponse;
+
+				currentNext = next;
+
+				pipedriveDeals.forEach(deal => {
+
+					const blingOrderBody = convertDealsToOrders(dealDetails, dealProducts);
+
+				// const createOrdersAtBling = await createOrders(pipedriveDeals);
+				});
+			}
+			console.log('Não há pedidos a serem criados!');
+			break;			
+		} while (currentNext);
+
+		
+
+		res.status(200).send(createdOrders);
 	});
+
+
+	
+// .post('/getToken', async (req: Request, res: Response) => {
+// 	const tokens = getToken();
+// 	return tokens;
+// })
 
 
