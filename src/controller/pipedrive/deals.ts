@@ -5,9 +5,9 @@ import axios from 'axios';
 
 //import { Request, Response } from 'express';
 
-export async function getDealsByStatus(status: string) {
+export async function getDealsByStatus(status: string, limit: number) {
 	console.log('chegou nas deals');
-	const url: string = `${pipeDriveBaseUrl}/deals/collection?${status}`;
+	const url: string = `${pipeDriveBaseUrl}/deals/collection?limit=${limit}&status=${status}`;
 
 	const config = {
 		headers: { 'x-api-token': pipeDriveToken }
@@ -15,10 +15,13 @@ export async function getDealsByStatus(status: string) {
 
 	const dealsList = await axios.get(url, config)
 		.then((response) => {
-			return response.data;
+			return {
+				pipedriveDeals: response.data.data, 
+				next: response.data.additional_data.next_cursor
+			};
 		}).catch(function (error) {
 			console.log('DEU RUIM');
-			console.log(error);
+			console.error(error);
 		}).finally(function () {
 			console.log('Chamada feita ao pipedrive');
 		});
@@ -27,7 +30,7 @@ export async function getDealsByStatus(status: string) {
 }
 
 export async function getDealDetails(id: number) {
-	console.log('chegou no get product');
+	console.log('chegou no get details');
 	const url: string = `${pipeDriveBaseUrl}/deals/${id}`;
 
 	const config = {
@@ -39,7 +42,7 @@ export async function getDealDetails(id: number) {
 			return response.data;
 		}).catch(function (error) {
 			console.log('DEU RUIM');
-			console.log(error);
+			console.error(error);
 		}).finally(function () {
 			console.log('Chamada feita ao pipedrive');
 		});
@@ -60,7 +63,7 @@ export async function getDealProducts(id: number) {
 			return response.data;
 		}).catch(function (error) {
 			console.log('DEU RUIM');
-			console.log(error);
+			console.error(error);
 		}).finally(function () {
 			console.log('Chamada feita ao pipedrive');
 		});
