@@ -2,7 +2,9 @@
 require('dotenv').config();
 
 //ROUTES
-import router from './routes/base/baseRouter';
+import baseRouter from './routes/base/baseRouter';
+import pipeDriveRouter from './routes/pipedrive/router';
+import blingRouter from './routes/bling/router';
 
 // EXTERNALS
 import express from 'express';
@@ -12,7 +14,9 @@ import db from '../config/db';
 const app = express();
 
 app.use(express.json());
-app.use('/api/', router);
+app.use('/api/', baseRouter);
+app.use('/api/pipedrive', pipeDriveRouter);
+app.use('/api/bling', blingRouter);
 
 const port = config.get<number>('port');
 
