@@ -3,7 +3,7 @@ import { Router, Request, Response } from 'express';
 // import DealsRoutes from '../pipedrive/deals';
 //const {getDealsByStatus} = new DealsRoutes();
 
-import {getPipeDriveDealsByStatus} from '../../controller/pipeDriveDealsToBling';
+import { getDealsByStatus } from '../../controller/pipedrive/deals';
 
 const router = Router();
 
@@ -15,9 +15,9 @@ export default router
 	.get('/getDealsByStatus', async(req: Request, res: Response) => {
 		const {status} = req.body;
 
-		const deals = await getPipeDriveDealsByStatus(status);
+		const pipedriveDeals = await getDealsByStatus(status);
 
 		// const createOrder = await createOrdersAtBling();
 
-		res.status(200).send(deals);
+		res.status(200).send(pipedriveDeals);
 	});
