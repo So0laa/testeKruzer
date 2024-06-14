@@ -5,9 +5,10 @@ import { Router, Request, Response } from 'express';
 
 import { getDealsByStatus, getDealDetails, getDealProducts } from '../../controller/pipedrive/deals';
 
-// import { createOrders, getToken } from '../../controller/bling/orders';
+import { createOrders, getToken, createContact } from '../../controller/bling/orders';
 
-// import convertDealsToOrders from '../../middleware/convertDealsToOrders';
+import convertDealsToOrders from '../../middleware/convertDealsToOrders';
+import convertContact from '../../middleware/convertContact';
 
 const router = Router();
 
@@ -40,7 +41,17 @@ export default router
 		const dealDetails = data;
 
 		res.status(200).send(dealDetails);
-	}).post('/createOrders', async (req: Request, res: Response) => {
+	})
+	.post('/createContact', async (req: Request, res: Response) => {
+		const contactBody = req.body;		
+
+		const { data }: any = await createContact(contactBody);
+
+		const createdContact = data;
+
+		res.status(200).send(createdContact);
+	})
+	.post('/createOrders', async (req: Request, res: Response) => {
 		const { status, limit } = req.body;
 
 		let currentNext: any;
@@ -55,11 +66,23 @@ export default router
 
 				currentNext = next;
 
-				pipedriveDeals.forEach(deal => {
+				pipedriveDeals.forEach(async (deal: any) => {
 
-					const blingOrderBody = convertDealsToOrders(dealDetails, dealProducts);
+					const { id } = deal;
 
-				// const createOrdersAtBling = await createOrders(pipedriveDeals);
+					const dealDetails = await getDealDetails(id);
+
+					const blingContactBody = convertContact(dealDetails);
+
+					const createContactAtBling = await createContact(blingContactBody);
+
+					const contact:number = createContactAtBling.id;
+
+					const dealProducts = await getDealProducts(id);
+
+					const blingOrderBody = convertDealsToOrders(contact, dealDetails, dealProducts);
+
+					const createOrderAtBling = await createOrders(blingOrderBody);
 				});
 			}
 			console.log('Não há pedidos a serem criados!');
@@ -70,8 +93,6 @@ export default router
 
 		res.status(200).send(createdOrders);
 	});
-
-
 	
 // .post('/getToken', async (req: Request, res: Response) => {
 // 	const tokens = getToken();
