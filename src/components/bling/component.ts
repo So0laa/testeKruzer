@@ -3,12 +3,11 @@ const blingBaseUrl = process.env.BLING_URL;
 
 import axios from 'axios';
 
-const qs = require('qs');
+// const qs = require('qs');
 
 //import { Request, Response } from 'express';
 
 export async function createContactRequest(blingContactBody: any) {
-
 	const url = `${blingBaseUrl}/contatos`;
 	const data = blingContactBody;
 	const config = {
@@ -42,7 +41,7 @@ export async function getContactRequest(name: string) {
 		}
 	};
 
-	const createContact:any = await axios.get(url, config)
+	const getContact:any = await axios.get(url, config)
 		.then((response) => {
 			console.log(response);				
 			return response.data;
@@ -52,11 +51,29 @@ export async function getContactRequest(name: string) {
 		}).finally(function () {
 			console.log('Chamada feita a bling');
 		});
-	return createContact;
+	return getContact;
 }
 
-export async function createOrdersRequest(pipedriveDeals: any) {
+export async function createOrdersRequest(blingOrderBody: any) {
+	const url = `${blingBaseUrl}/pedidos/vendas`;
+	const data = blingOrderBody;
+	const config = {
+		headers: {
+			'Autorization': blingToken
+		}
+	};
 
+	const createOrder:any = await axios.post(url, data, config)
+		.then((response) => {
+			console.log(response);				
+			return response.data;
+		}).catch(function (error) {
+			console.log('DEU RUIM');
+			console.error(error.response.data);
+		}).finally(function () {
+			console.log('Chamada feita a bling');
+		});
+	return createOrder;
 
 }
 
